@@ -1,15 +1,93 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>My Web Page is here</title>
-    </head>
-    <body>
-        <h1>Welcome to my web page!</h1>
-        <p>This is a paragraph of text.</p>
-        <ul>
-            <li>List item 1</li>
-            <li>List item 2</li>
-            <li>List item 3</li>
-        </ul>
-    </body>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Tömeg</title>
+    <style>     
+        label {
+            width: 100px;
+        }
+
+        fieldset {
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100px;
+        }
+
+        output {
+            border-top: 2px dotted #000;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <fieldset>
+            <legend>Adja meg egy hasáb méreteit (cm) és anyagát!</legend>
+            <label for="szel">Szélesség:</label>
+            <input type="number" id="szel" name="szel" step="0.01" min="0" value="0"><br>
+            <label for="mag">Magasság:</label>
+            <input type="number" id="mag" name="mag" step="0.01" min="0" value="0"><br>
+            <label for="mely">Mélység:</label>
+            <input type="number" id="mely" name="mely" step="0.01" min="0" value="0"><br>
+        </fieldset>
+
+        <fieldset>
+            <legend>Sűrűség</legend>
+            <label for="suruseg">Sűrűség:</label>
+            <select id="suruseg" name="suruseg">
+                <optgroup label="Gázok">
+                    <option value="1.42895">Oxigén</option>
+                    <option value="0.7168">Metán</option>
+                </optgroup>
+                <optgroup label="Folyadékok">
+                    <option value="1000">Víz</option>
+                    <option value="789">Etil-alkohol</option>
+                </optgroup>
+                <optgroup label="Szilárd anyagok">
+                    <option value="7860">Vas</option>
+                    <option value="19300">Arany</option>
+                </optgroup>
+            </select>
+            <button id="torles">Törlés</button>
+        </fieldset>
+
+        <input type="submit" value="Számolás">
+
+    </form>
+
+    <p>
+        <label for="tomeg">Tömeg (kg):</label>
+        <output id="tomeg">N/A</output>
+    </p>
+
+    <script>
+         const torlesButton = document.getElementById('torles');
+        torlesButton.addEventListener('click', function () {
+            const surusegSelect = document.getElementById('suruseg');
+            const selectedOption = surusegSelect.options[surusegSelect.selectedIndex];
+            surusegSelect.removeChild(selectedOption);
+        });
+        
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const szel = parseFloat(document.getElementById('szel').value);
+            const mag = parseFloat(document.getElementById('mag').value);
+            const mely = parseFloat(document.getElementById('mely').value);
+            const suruseg = parseFloat(document.getElementById('suruseg').value);
+
+            // Méretek átszámítása m^3-ba
+            const terfogat = (szel / 100) * (mag / 100) * (mely / 100);
+
+            // Tömeg számítása: térfogat x sűrűség
+            const tomeg = (terfogat * suruseg).toFixed(2);
+            document.getElementById('tomeg').textContent = tomeg;
+        });
+    </script>
+</body>
 </html>
