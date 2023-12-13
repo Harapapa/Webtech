@@ -29,13 +29,16 @@ Gondoskodjon róla, hogy újabb bejegyzések létrehozásánál ne lehessen az u
 
 -->
 
+<!--Készítsen olyan HTML5 weboldalt az alábbi ábrának megfelelően,
+melynek nyelve magyar, karakterkódolása UTF-8, böngészőfülön megjelenő címe pedig Autós napló! -->
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="hu-HU"> 
 <head>
     <meta charset="UTF-8">
     <title>Autós napló</title>
     <style>
-      body {
+        /*A címkék szövegét jelenítse meg a mellékelt, RubikGemstones-Regular.ttf karakterkészlettel*/
+      body { 
     font-family: "RubikGemstones-Regular", sans-serif;
     text-align: center;
 }
@@ -43,26 +46,28 @@ Gondoskodjon róla, hogy újabb bejegyzések létrehozásánál ne lehessen az u
 h1 {
     font-family: "RubikGemstones-Regular", sans-serif;
 }
-
-#autonaplo-form {
+/*Az űrlapmezőket és címkéiket jelenítse meg flex tárolóban, egymás alatt, 
+    a tároló maximális szélessége 12 cm legyen és ha a böngésző ablakának szélessége ennél nagyobb, 
+    akkor a tárolót igazítsa a képernyő közepére.*/
+#autonaplo-form { 
     max-width: 12cm;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
+/*A tárolóban elhelyezett elemeket 10 képpont távolságra helyezze el egymástól.*/
 label {
     margin: 10px 0;
     font-family: "RubikGemstones-Regular", sans-serif;
 }
-
+/*A tárolóban elhelyezett elemeket 10 képpont távolságra helyezze el egymástól.*/
 input, select {
     margin: 10px 0;
     padding: 5px;
     font-family: "RubikGemstones-Regular", sans-serif;
 }
-
+/*A tárolóban elhelyezett elemeket 10 képpont távolságra helyezze el egymástól.*/
 input[type="submit"] {
     background-color: #007bff;
     color: white;
@@ -80,32 +85,40 @@ input[type="submit"]:hover {
 </head>
 <body>
     <h1>Autós napló</h1>
-    <form id="autonaplo-form" action="#" method="post">
+    <!-- 
+     Készítsen ezen egy űrlapot(form), amiben elhelyez három címkét(label) „Bejegyzések”, „km-számláló állása” és „Dátum” tartalommal a megfelelő beviteli mezőkhöz (input)!
+    -->
+    <form id="autonaplo-form" action="#" method="post"> 
         <label for="bejegyzesek">Bejegyzések:</label>
-        <select id="bejegyzesek" name="bejegyzesek" size="6">
+        <select id="bejegyzesek" name="bejegyzesek" size="6"> 
+<!--Hozza létre a bejegyzéseket tartalmazó, többszörös kiválasztást lehetővé tevő listát, melyben egymás alatt 6 sornyi adat fér el görgetés nélkül!-->
         </select> 
         <br>
         <label for="km-allas">Km-számláló állása:</label>
-        <input type="number" id="km-allas" name="km-allas" min="0" step="1" required>
+        <!--Hozza létre a km-számláló állásának bevitelére alkalmas számbeviteli mezőt, melybe nem lehet negatív értéket bevinni, és csak egészeket fogad el!-->
+        <input type="number" id="km-allas" name="km-allas" min="0" step="1" value=0 required>
         <br>
         <label for="datum">Dátum:</label>
         <input type="date" id="datum" name="datum" required>
+        <!--Hozza létre a dátumbeviteli mezőt is, melyet szintén kötelező kitölteni!-->
         <button type="button" id="set-current-date">Aktuális dátum beállítása</button>
         <br>
-
         <label for="megnevezes">Megnevezés:</label>
-        <input type="text" id="megnevezes" name="megnevezes" placeholder="Megnevezés" required>
+        <!-- Készítsen szövegbeviteli mezőt is, melyben a „Megnevezés” szöveg jelenik meg mindaddig amíg a felhasználó el nem kezd gépelni bele valamit!  
+        Ennek kitöltése kötelező.-->
+        <input type="text" id="megnevezes" name="megnevezes" placeholder="Megnevezés" required> 
         <br>
-
+        <!--Végül helyezzen el az űrlapon egy „Hozzáad” feliratú, kifejezetten űrlapok beküldésére szolgáló vezérlőt is!-->
         <input type="submit" value="Hozzáad">
     </form>
-
-    <noscript>
+<!--Gondoskodjon róla, hogy JavaScript támogatása hiányában a böngésző megjelenítse a 
+„Az Ön böngészője nem alkalmas az alkalmazás futtatására.” hibaüzenetet.-->
+    <noscript> 
         <p>Az Ön böngészője nem alkalmas az alkalmazás futtatására.</p>
     </noscript>
 
     <script>
-        // JavaScript kód az aktuális dátum beállításához 
+        //  Készítsen JavaScript programot, ami lekérdezi a böngészőtől az aktuális dátumot, és erre állítja be a dátumválasztó mezőt!
         document.getElementById("set-current-date").addEventListener("click", function () {
             var today = new Date();
             var year = today.getFullYear();
@@ -115,7 +128,7 @@ input[type="submit"]:hover {
             document.getElementById("datum").value = formattedDate;
         });
 
-        // JavaScript kód a bejegyzések hozzáadásához
+        // Ha a felhasználó a „Hozzáad” gombra kattint, fűzzön hozzá a bejegyzésekhez egy új elemet, 
         document.getElementById("autonaplo-form").addEventListener("submit", function (event) {
             event.preventDefault(); // Ne küldjük el az űrlapot
 
@@ -125,16 +138,11 @@ input[type="submit"]:hover {
             var datum = document.getElementById("datum").value;
            
 
-            // Készítsd el az új bejegyzést a megadott adatokkal és fűzd hozzá a listához
+            //melyben egymástól kötöjellel elválasztva szerepelnek a bevitt adatok!
             var newEntry = megnevezes + " - " + kmAllas+ "km" + " - " + datum;
             var option = document.createElement("option");
             option.text = newEntry;
             bejegyzesekSelect.add(option);
-
-            // Ürítsd az űrlap mezőit
-            document.getElementById("megnevezes").value = "";
-            document.getElementById("km-allas").value = "";
-            document.getElementById("datum").value = "";
         });
     </script>
 
