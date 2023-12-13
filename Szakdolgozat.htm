@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hu-HU">
+  <head>
+    <title>Szakdolgozat értékelő lap</title>
+    <meta charset="utf-8" />
+   <style>
+    h1 {
+  margin-bottom: 1cm;
+}
+
+form {
+  width: 15cm;
+}
+
+div {
+  clear: both;
+  height: 30px;
+}
+
+label {
+  margin-top: 5px;
+  float: left;
+}
+
+input, select {
+  width: 9cm;
+  float: right;
+}
+
+input {
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  float: none;
+  width: 1cm;
+  box-sizing: content-box;
+}
+
+ol {
+  padding-left: 0.5cm;
+  box-sizing: border-box;
+  width: 15cm;
+  clear: both;
+}
+
+.jobbra {
+  right: 0;
+  top: -6px;
+  position: absolute;
+}
+
+li {
+  margin-top: 6px;
+  position: relative;
+}
+
+textarea {
+  width: 14.5cm;
+  height: 5cm;
+  box-sizing: border-box;
+  margin-top: 6px;
+}
+   </style>
+  </head>
+  <body>
+    <h1>Szakdolgozat értékelő lap</h1>
+    <form action="#" id="urlap">
+      <div><label>Szerző (jelölt): </label>
+        <input id="szerzo" type="text" /></div>
+      <div><label for="szak">Szak: </label>
+        <input id="szak" type="text" list="szakok" /></div>
+      <datalist id="szakok">
+        <option>Mérnök informatikus</option>
+        <option>Gazdaságinformatikus</option>
+      </datalist>
+      <div><label for="szint">Képzési szint: </label>
+        <select>
+          <option>BSc</option>
+          <option>MSc</option>
+        </select>
+      </div>
+      <div><label for="cim">A szakdolgozat címe: </label>
+        <input id="cim" type="text" /></div>
+      <div><label for="biralo">A bíráló neve: </label>
+        <input id="biralo" type="text" /></div>
+      <div><label for="munkahely">Munkahelye: </label>
+        <input id="munkahely" type="text" /></div>
+      <div><label for="beosztas">Beosztása: </label>
+        <input id="beosztas" type="text" /></div>
+      <ol>
+        <li>Témaválasztás<span class="jobbra">Pontszám: 
+          <input id="temavalasztas" type="number" 
+          min="0" max="5" step="1" value="0" /></span><br />
+          <textarea></textarea></li>
+        <li>A dolgozat szerkezete, stílusa<span class="jobbra">Pontszám: 
+          <input id="szerkezet" type="number" 
+          min="0" max="8" step="1" value="0" /></span><br />
+          <textarea></textarea></li>
+        <li>Szakirodalom feldolgozása<span class="jobbra">Pontszám: 
+          <input id="szakirodalom" type="number" 
+          min="0" max="10" step="1" value="0" /></span><br />
+          <textarea></textarea></li>
+        <li>A téma kidolgozásának színvonala<span class="jobbra">Pontszám: 
+          <input id="kidolgozas" type="number" 
+          min="0" max="20" step="1" value="0" /></span><br />
+          <textarea></textarea></li>
+        <li>A dolgozat gyakorlati vonatkozása<span class="jobbra">Pontszám: 
+          <input id="gyakorlat" type="number" 
+          min="0" max="7" step="1" value="0" /></span><br />
+          <textarea></textarea></li>
+      </ol>
+      <p>Összpontszám: <span id="osszpontszam">0</span>, érdemjegy: <span id="jegy">elégtelen (1)</span>.</p>
+    </form>
+    <script>
+        function osztalyzat(osszpontszam) {
+  if(osszpontszam >= 45) return 5;
+  if(osszpontszam >= 38) return 4;
+  if(osszpontszam >= 31) return 3;
+  if(osszpontszam >= 26) return 2;
+  return 1;
+}
+
+function osszpontszam(pontok) {
+  var osszesen = 0;
+  for(var i=0; i<pontok.length; i++) {
+    osszesen += pontok[i];
+  }
+  return osszesen;
+}
+
+function pontozas(e) {
+  if(e.target.type == "number") {
+    var pontok = document.querySelectorAll("input[type='number']");
+    var p = [];
+    for(var i=0; i<pontok.length; i++) {
+      p.push(+pontok[i].value);
+    }
+    var osszesen = osszpontszam(p);
+    var jegy = osztalyzat(osszesen);
+    var szoveg = ["elégtelen", "elégséges", "közepes", "jó", "jeles"];
+    document.getElementById("osszpontszam").textContent = osszesen;
+    document.getElementById("jegy").textContent = szoveg[jegy-1]+" ("+jegy+")";
+  }
+  e.preventDefault();
+}
+
+window.addEventListener("load", function() {
+  document.getElementById("urlap").
+    addEventListener("change", pontozas, false);
+}, false);
+
+function jegyTeszt() {
+  'use strict';
+  
+  function testOsztalyzat() {
+    jsUnity.assertions.assertEqual(2, osztalyzat(26), "2-es alsó ponthatár 26 pont!");
+    jsUnity.assertions.assertEqual(2, osztalyzat(30), "2-es felső ponthatár 30 pont!");
+    jsUnity.assertions.assertEqual(3, osztalyzat(31), "3-es alsó ponthatár 31 pont!");
+    jsUnity.assertions.assertEqual(3, osztalyzat(37), "3-es felső ponthatár 37 pont!");
+    jsUnity.assertions.assertEqual(4, osztalyzat(38), "4-es alsó ponthatár 38 pont!");
+    jsUnity.assertions.assertEqual(4, osztalyzat(44), "4-es felső ponthatár 44 pont!");
+    jsUnity.assertions.assertEqual(5, osztalyzat(45), "5-es alsó ponthatár 45 pont!");
+    jsUnity.assertions.assertEqual(5, osztalyzat(50), "5-es felső ponthatár 50 pont!");
+    jsUnity.assertions.assertEqual(1, osztalyzat(25), "elégtelennek kellene lennie!");
+  }
+  
+};
+
+jsUnity.log = function(uzenet) {
+  console.log(uzenet);
+}
+
+jsUnity.run(jegyTeszt);
+
+    </script>
+  </body>
+
+</html>

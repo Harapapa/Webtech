@@ -1,0 +1,154 @@
+<!--
+Készítsen ZH adminisztrációt támogató weboldalt!
+A félévközi számonkérés szabályai a következők:
+-két ZH-t írhatnak a hallgatók, melyeken 7-7 pontot lehet szerezni.
+-bármelyik, vagy akár mindkét ZH is javítható, továbbá az eredeti és javító ZH eredménye közül a jobbat fogadjuk el.
+-aki a két ZH-ból összesen legalább 6 pontot gyűjt, aláírást kap, aki 11-12 pontot, az 4-es megajánlott jegyet is, aki 13-14-et az 5-öst.
+
+A feladat olyan HTML oldal készítése, melynek címe és első szintű címsora egyaránt "ZH adminisztráció".
+Készítsen táblázatot, melyben meg lehet adni a hallgató nevét, neptun kódját, és a négy ZH során kapott pontjait
+az egymás melletti oszlopokban.
+A Neptun kódra olyan szűrőt kell beállítani, ami csak alfanumerikus karaktereket enged meg,
+és abból sem enged többet 6-nál. A pontszámokhoz is kifejezetten egész számok bevitelére
+alkalmas vezérlőket használjon, melyek csak a [0,7]intervallumba eső egész értékeket engedélyeznek.
+az alapállapotban a 0 található bennük. Ezetn kívül legyen egy-egy oszlop az összpontszám,
+az aláírás és a megajánlott jegy számára is. Helyezzen el egy gombot, amivel a kezdetben csak fejlécet és 
+egyetlen adatsort tartalmazó táblázat egy új sorral bővíthető!
+
+A weboldalt egészítse ki CSS stíluslappal! A címsort formázza meg Arial, de legalább talp nélküli,
+32 nyomdai pont méretű, kék színű betűkkel! Az oszlopok tartalma legyen minden esetben középre igazítva!
+A "megtagadva" és a megajánlott jegy hiányát jelző - karakter jelenjen meg vörös színnel, az "aláírva" és 
+a 4,5 megajánlott jegyek zölddel, valamint hangsúlyozza még félkövér betűkkel is!
+-->
+
+<!DOCTYPE html>
+<html lang="hu-HU">
+	<head>
+		<title>ZH-adminisztráció</title>
+		<meta charset="utf-8" />
+<style>
+h1 {
+	font-family: Arial, sans-serif;
+	font-size: 32pt;
+	color: blue;
+}
+
+td, th {
+	text-align: center;
+}
+
+.jo {
+	color: green;
+	font-weight: bold;
+}
+
+.rossz {
+	color: red;
+}
+</style>
+	</head>
+	<body>
+		<h1>ZH-adminisztráció</h1>
+		<form id="urlap">
+			<table>
+				<thead>
+					<tr>
+						<th>Név</th>
+						<th>Neptun</th>
+						<th>1. ZH</th>
+						<th>1. ZH pót</th>
+						<th>2. ZH</th>
+						<th>2. ZH pót</th>
+						<th>Összesen</th>
+						<th>Aláírás</th>
+						<th>Megajánlott</th>
+					</tr>
+				</thead>
+				<tbody id="torzs">
+					<tr>
+						<td><input type="text" /></td>
+						<td><input type="text" pattern="[a-zA-Z0-9]{6}" maxlength="6" /></td>
+						<td><input type="number" min="0" max="7" value="0" /></td>
+						<td><input type="number" min="0" max="7" value="0" /></td>
+						<td><input type="number" min="0" max="7" value="0" /></td>
+						<td><input type="number" min="0" max="7" value="0" /></td>
+						<td>0</td>
+						<td class="rossz">megtagadva</td>
+						<td class="rossz">-</td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="button" value="+" id="hozzaad" />
+		</form>
+	</body>
+    <script>
+
+        function valtozas(e) {
+	var sor = e.srcElement.parentNode.parentNode;
+	var szamok = sor.querySelectorAll("input[type='number']");
+	var zh1 = +szamok[0].value;
+	var pzh1 = +szamok[1].value;
+	var zh1v = zh1>pzh1?zh1:pzh1;
+	var zh2 = +szamok[2].value;
+	var pzh2 = +szamok[3].value;
+	var zh2v = zh2>pzh2?zh2:pzh2;
+	var osszes = zh1v + zh2v;
+	sor.children[6].textContent = osszes;
+	sor.children[7].textContent = (osszes>=6?"aláírva":"megtagadva");
+	sor.children[7].className = (osszes>=6?"jo":"rossz");
+	var jegy;
+	switch(osszes) {
+		case 14:
+		case 13:
+			jegy = 5;
+			break;
+		case 12:
+		case 11:
+			jegy = 4;
+			break;
+		default:
+			jegy = "-";
+			break;
+	}
+	sor.children[8].textContent = jegy;
+	sor.children[8].className = (osszes>=11?"jo":"rossz");
+}
+
+function hozzaad() {
+	var torzs = document.getElementById("torzs");
+	var sor = document.createElement("tr");
+	for(var i=0; i<2; i++) {
+		var cella = document.createElement("td");
+		sor.appendChild(cella);
+		var szoveg = document.createElement("input");
+		cella.appendChild(szoveg);
+		szoveg.type = "text";
+	}
+	sor.children[1].firstChild.pattern = "[a-zA-Z0-9]{6}";
+	sor.children[1].firstChild.maxlength=6;
+	for(var i=0; i<4; i++) {
+		var cella = document.createElement("td");
+		sor.appendChild(cella);
+		var szam = document.createElement("input");
+		cella.appendChild(szam);
+		szam.type = "number";
+		szam.min = "0";
+		szam.max = "7";
+	}
+	for(var i=0; i<3; i++) {
+		var cella = document.createElement("td");
+		if(i>0) cella.className="rossz";
+		sor.appendChild(cella);
+	}
+	sor.children[6].textContent = "0";
+	sor.children[7].textContent = "megtagadva";
+	sor.children[8].textContent = "-";
+	torzs.appendChild(sor);
+}
+
+window.onload = function() {
+	document.getElementById("urlap").onchange = valtozas;
+	document.getElementById("hozzaad").onclick = hozzaad;
+}
+    </script>
+</html>

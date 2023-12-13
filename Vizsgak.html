@@ -1,0 +1,122 @@
+<!-- Készítsen olyan html5 weboldalt, amelynek böngésző címsorában megjelenő címe
+Vizsgák, és vizsgák adatainak megjelenítését végzi!
+• Álljon az oldal tetején első szintű címsorként a következő szöveg: „Az egyes oktatók
+által adott tárgyból levizsgáztatott hallgatók száma”!
+• Ennek bal oldalán álljon a „sze_logo.png” kép, alternatív szövege „SZE logó” legyen!
+• Készítse el a táblázatot, amiben fontos az egyes cellák megfelelő összevonása,
+gknb_intm049_2020-21-1_01.odt >>> Fordíts! >>> 2018-12-14 16:52:35
+• és az, hogy az „Oktatók” és „Tárgyak” cellák fejléc típusúak legyenek, míg az összes
+többi egyszerű adatcella.
+• Az egyes tárgyak és oktatók metszéspontjában számbeviteli mezőnek kell állnia, ami
+csak nemnegatív egészeket fogad el.
+• A táblázatban szereplő „Web” legyen olyan hivatkozás, melyre kattintva el lehet jutni
+a https://uni.sze.hu/files/targytematika/GKNB_INTM049/2020_21_1_GKNB_INTM049_0.pdf
+weboldalra. A tematikának új böngészőfülön kell megnyílnia.
+• Ha valaki az egeret az „Oktatók” felirat felett tartja, felbukkanó buborékban meg kell
+jelennie a „Tanszéki oktatók” feliratnak.
+• Ha a böngésző nem képes JS programokat futtatni, jelenjen meg az oldalon a „Ennek
+az oldalnak a működéséhez JavaScript szükséges.” szöveg!
+
+A weboldalt egészítse ki CSS stíluslappal!
+• A címsort vegye körbe 2 képpont vastagságú piros pontvonallal, amit a sarkokon 10
+képpont sugarú körben lekerekít!
+• A táblázat celláit vonja össze!
+• Minden cellát keretezzen be folytonos, 1 képpont vastagságú, fekete vonallal!
+• A cellák legyenek mindkét tengely mentén középre igazítottak!
+• A táblázat sarkaiban lévő cellákat, amikben nincs információ, ne is jelenítse meg a
+böngésző (ne keretezze őket)!
+• A számbeviteli mezők szélességét állítsa 75 képpontra!
+• A kép legyen 39 képpont magasságú, és függőleges irányban igazítsa a szöveg
+aljához!
+• Ha a „Web” hivatkozás fölé viszik az egeret, a link szövege legyen fekete színű,
+háttere pedig citromsárga!-->
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vizsgák, és vizsgák adatainak megjelenítése</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            border: 2px dashed red;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        img {
+            height: 39px;
+            vertical-align: text-bottom;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        td:empty {
+        border: none;
+    }
+
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="number"] {
+            width: 75px;
+        }
+        input[type="text"] {
+            width: 75px;
+            empty-cells: hide;
+        }
+
+        a:hover {
+            color: black;
+            background-color: lemonchiffon;
+        }
+        th tr td:empty {
+        border: none;
+    }
+    </style>
+</head>
+<body>
+    <h1>Az egyes oktatók
+        által adott tárgyból levizsgáztatott hallgatók száma</h1>
+    <img src="sze_logo.png" alt="SZE logo">
+
+    <table>
+        <tr>
+            <td><td><th colspan="3">Tantárgyak</th></td></td>
+            <tr> 
+                <td><td><td colspan="1"><a href="https://uni.sze.hu/files/targytematika/GKNB_INTM049/2020_21_1_GKNB_INTM049_0.pdf" target="_blank">Web</a></td></td></td></td>
+                <td colspan="1">Prog</td>
+                <td colspan="1">Adatbázis</td>
+            </tr>
+        <tr><th title="Tanszéki oktatók" rowspan="2">Oktatók</th> 
+        <td colspan="1">Oktató 1 </td>
+        <td colspan="1"> <input type="number" min="0"> </td>
+        <td colspan="1"> <input type="number" min="0"> </td>
+        <td colspan="1"> <input type="number" min="0"> </td>
+            <tr> <td colspan="1">Oktató 2</td> 
+        <td colspan="1"> <input type="number" min="0"> </td>
+        <td colspan="1"> <input type="number" min="0"> </td>
+        <td colspan="1"> <input type="number" min="0"> </td>
+        </tr>
+        <tr>
+           <td><td><td colspan="1"> <input type="hidden" min="0"> </td>
+           <td colspan="1"> <input type="hidden" min="0"> </td>
+           <td colspan="1"> <input type="hidden" min="0"> </td>
+        </tr>
+            </tr>
+    </table> 
+    <noscript>This page requires JavaScript to function.</noscript>
+</body>
+</html>

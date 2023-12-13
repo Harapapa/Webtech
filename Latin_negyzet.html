@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Latin négyzet</title>
+    <style> table {
+        border-collapse: collapse;
+        margin-bottom: 0.5cm;
+    }
+    
+    
+    td {
+        border: 1px dotted black;
+        width: 1.2cm;
+        height: 1.2cm;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    
+    input[type="number"] {
+        width: 1cm;
+    }
+    
+    </style>
+    <script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+    
+        var table = Array.from(document.querySelectorAll('tr')).map(function(row) {
+            return Array.from(row.querySelectorAll('input')).map(function(input) {
+                return parseInt(input.value, 10);
+            });
+        });
+    
+    
+        var isValid = checkLatinSquare(table);
+    
+    
+        if (isValid) {
+            alert('A beírt számok latin négyzetet alkotnak.');
+        } else {
+            alert('A beírt számok nem alkotnak latin négyzetet.');
+        }
+    });
+    
+    
+    function checkLatinSquare(table) {
+        var size = table.length;
+    
+    
+        for (var i = 0; i < size; i++) {
+            var row = table[i];
+            var column = table.map(function(row) { return row[i]; });
+    
+    
+            if (!checkUnique(row) || !checkUnique(column)) {
+                return false;
+            }
+        }
+    
+    
+        return true;
+    }
+    
+    
+    function checkUnique(array) {
+        var values = {};
+    
+    
+        for (var i = 0; i < array.length; i++) {
+            if (values[array[i]]) {
+                return false;
+            }
+    
+    
+            values[array[i]] = true;
+        }
+    
+    
+        return true;
+    }
+    </script>
+</head>
+<body>
+    <h1>Latin<sup>2</sup></h1>
+    <form>
+        <table>
+            <tr>
+                <td><input type="number" min="1" max="4" required value="1"></td>
+                <td><input type="number" min="1" max="4" required value="2"></td>
+                <td><input type="number" min="1" max="4" required value="3"></td>
+                <td><input type="number" min="1" max="4" required value="4"></td>
+            </tr>
+            <tr>
+                <td><input type="number" min="1" max="4" required value="2"></td>
+                <td><input type="number" min="1" max="4" required value="3"></td>
+                <td><input type="number" min="1" max="4" required value="4"></td>
+                <td><input type="number" min="1" max="4" required value="1"></td>
+            </tr>
+            <tr>
+                <td><input type="number" min="1" max="4" required value="3"></td>
+                <td><input type="number" min="1" max="4" required value="4"></td>
+                <td><input type="number" min="1" max="4" required value="1"></td>
+                <td><input type="number" min="1" max="4" required value="2"></td>
+            </tr>
+            <tr>
+                <td><input type="number" min="1" max="4" required value="4"></td>
+                <td><input type="number" min="1" max="4" required value="1"></td>
+                <td><input type="number" min="1" max="4" required value="2"></td>
+                <td><input type="number" min="1" max="4" required value="3"></td>
+            </tr>
+        </table>
+        <button type="submit">Ellenőriz</button>
+    </form>
+</body>
+</html>
+

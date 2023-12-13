@@ -1,0 +1,618 @@
+<!--
+    4.	Készítsen HTML5 weboldalt
+•	Menetrend címmel a böngészőfülön, UTF-8 kódolással és magyar nyelvűként megjelölve!
+•	A keresőprogramok számára adjon meg kulcsszavakat az oldalhoz: vasút, menetrend, vonat, járat!
+•	A teljes látható tartalom legyen egy cikk, melynek első szintű címsora a Vasúti járatkereső feliratot tartalmazza!
+•	A színes téglalapok legyenek a cikk szakaszai! Az Utazási adatok megadása legyen második szintű címsor!
+•	A használati útmutató (Adja meg, hogy honnan...) legyen bekezdés! Ebben jelölje meg hangsúlyozott elemként a Keresés szót!
+•	Hozzon létre űrlapot két címkével és két, kezdetben üres legördülő listával és egy űrlap küldését kezdeményező gombbal!
+•	Kapcsolja össze az oldalt egy stíluslappal, és legalább a vonat.js fájllal!
+•	Ha a felhasználó böngészője nem tud JavaScript fájlokat futtatni, jelenítsen meg erről tájékoztató üzenetet! (8 p.)
+5.	A weboldalt egészítse ki CSS stíluslappal!
+•	A címsorok karakterkészlete legyen Arial, ennek esetleges hiánya esetén tetszőleges talp nélküli betűkészlet!
+•	A címsorok írásszíne legyen kék!
+•	A címsorok felső margóját tüntesse el!
+•	Az 1. szintű címsor mérete legyen 24 nyomdai pont, a 2. szintűé 18, a 3. szintűé pedig 16!
+•	A cikk szakaszai legyenek folytonos kerettel ellátva, amely a bal oldalon 15 képpont, a másik három oldalon 3-3 képpont szélességű!
+•	A szakaszok felső margója legyen 5mm, belső kitöltése pedig 5 képpont!
+•	A használati útmutató kerete legyen sötétzöld, háttere világoszöld! Ha egy járatot lekéstünk már, kerete legyen bordó, háttere piros, ha még nem, akkor kerete sötétkék, háttere világoskék színű!
+•	A címkék (Honnan, Hova) szélessége legyen 2cm! (8 p.)
+6.	Készítsen JavaScript programot, ami a vonat.js tartalmát elemezve feltölti a két legördülő listát a megállók neveivel! Az űrlap küldésének eseményére ellenőrzi, hogy az indulási és érkezési megálló egyezik-e! Ha igen, felbukkanó dialógusablakban figyelmeztesse a felhasználót, hogy eltérő állomásokat adjon meg! Egyébként keresse meg az összes olyan járatot, amivel el lehet jutni egyik helyről a másikra! Ha ez a járat már elment, jelenítse meg ezt piros témával, egyébként kékkel! A járatok adatai külön szakaszokban legyenek elhelyezve a cikken belül! Új keresésnek le kell törölnie a korábbi keresések eredményeit! (13 p.)
+7.	Oldjon meg minden feladatot jQuery segítségével, amit csak lehet! (3 p.)
+-->
+
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <title>Menetrend</title>
+    <meta name="keywords" content="vasút, menetrend, vonat, járat" />
+    <style>
+        h1, h2, h3 {
+  font-family: Arial, sans-serif;
+  color: blue;
+  margin-top: 0px;
+}
+
+h1 {
+  font-size: 24pt;
+}
+
+h2 {
+  font-size: 18pt;
+}
+
+h3 {
+  font-size: 16pt;
+}
+
+section {
+  border-style: solid;
+  border-width: 3px;
+  border-left-width: 15px;
+  padding: 5px;
+  border-color: blue;
+  background-color: lightblue;
+  margin-top: 5mm;
+}
+
+.tajekoztato {
+  border-color: green;
+  background-color: lightgreen;
+}
+
+.keso {
+  border-color: #cc3300;
+  background-color: red;
+}
+
+label {
+  display: inline-block;
+  width: 2cm;
+}
+    </style>
+  </head>
+  <body>
+    <article id="tartalom">
+      <h1>Vasúti járatkereső</h1>
+      <section class="tajekoztato">
+        <h2>Utazási adatok megadása</h2>
+        <p>Adja meg, hogy honnan és hová szeretne utazni, majd nyomja meg a <em>Keresés</em> gombot! Az oldal kilistázza az összes olyan járatot, amivel eljuthat a kívánt helyre.</p>
+        <form id="urlap" action="#">
+          <div><label for="honnan">Honnan:</label><select id="honnan"></select></div>
+          <div><label for="hova">Hova:</label><select id="hova"></select></div>
+          <div><input type="submit" value="Keresés" /></div>
+        </form>
+      </section>
+    </article>
+    <noscript>Ez a weboldal nem működik az Ön gépén a JavaScript támogatás hiánya miatt.</noscript>
+  </body>
+<script>
+    let menetrend = {
+  megallok: [],
+  megalloGyujt: function(db) {
+    for(let kulcs in db) {
+      for(let i=0; i<db[kulcs].length; i++) {
+        let mnev = db[kulcs][i].megallo;
+        if(!this.megallok.includes(mnev)) {
+          this.megallok.push(mnev);
+        }
+      }
+    }
+    this.megallok.sort();
+  },
+  opciok: function(szulo) {
+    for(kulcs in this.megallok) {
+      let opcio = $("<option>").attr("value", this.megallok[kulcs]).text(this.megallok[kulcs]);
+      $(szulo).append(opcio);
+    }
+  },
+  pontosIdo: function() {
+    let d = new Date();
+    let o = d.getHours();
+    if(o<10) o="0"+o;
+    let p = d.getMinutes();
+    if(p<10) p="0"+p;
+    return o+":"+p;
+  },
+  kereses: function(db, honnan, hova) {
+    $(".jarat").remove();
+    honnan = this.megallok[honnan];
+    hova = this.megallok[hova];
+    let ido = this.pontosIdo();
+    let tartalom = $("#tartalom");
+    for(let jarat in db) {
+      let indul=-1, erkezik=-1;
+      for(let m=0; m<db[jarat].length; m++) {
+        if(db[jarat][m].megallo == honnan) {
+          indul = m;
+        }
+        if(db[jarat][m].megallo == hova) {
+          erkezik = m;
+        }
+        if(indul!=-1 && erkezik!=-1) break;
+      }
+      if(indul!=-1 && erkezik!=-1 && indul<=erkezik) {
+        let blokk = $("<section>").addClass("jarat");
+        if(db[jarat][indul].indul < ido) {
+          blokk.addClass("keso");
+        }
+        blokk.append($("<h3>").text(jarat));
+        blokk.append($("<p>").text("Indulás: "+db[jarat][indul].indul));
+        blokk.append($("<p>").text("Érkezés: "+db[jarat][erkezik].erkezik));
+        tartalom.append(blokk);
+      }
+    }
+  }
+};
+
+$(function() {
+  menetrend.megalloGyujt(adatbazis);
+  menetrend.opciok($("#honnan")[0]);
+  menetrend.opciok($("#hova")[0]);
+  $("#urlap").submit(function(e) {
+    let honnan = $("#honnan")[0].selectedIndex;
+    let hova = $("#hova")[0].selectedIndex;
+    if(honnan == hova) {
+      alert("Jelöljön ki eltérő állomásokat!");
+    } else {
+      menetrend.kereses(adatbazis, honnan, hova);
+    }
+    e.preventDefault();
+  });
+});
+
+let adatbazis = {
+    "4910 személyvonat": [
+      {
+        megallo: "Budapest-Déli",
+        erkezik: null,
+        indul: "04:30"
+      },
+      {
+        megallo: "Budapest-Kelenföld",
+        erkezik: "04:36",
+        indul: "04:38"
+      },
+      {
+        megallo: "Budaörs",
+        erkezik: "04:42",
+        indul: "04:43"
+      },
+      {
+        megallo: "Törökbálint",
+        erkezik: "04:47",
+        indul: "04:47"
+      },
+      {
+        megallo: "Biatorbágy",
+        erkezik: "04:51",
+        indul: "04:52"
+      },
+      {
+        megallo: "Herceghalom",
+        erkezik: "04:56",
+        indul: "04:57"
+      },
+      {
+        megallo: "Bicske alsó",
+        erkezik: "05:02",
+        indul: "05:02"
+      },
+      {
+        megallo: "Bicske",
+        erkezik: "05:04",
+        indul: "05:05"
+      },
+      {
+        megallo: "Szár",
+        erkezik: "05:09",
+        indul: "05:09"
+      },
+      {
+        megallo: "Szárliget",
+        erkezik: "05:12",
+        indul: "05:13"
+      },
+      {
+        megallo: "Alsógalla",
+        erkezik: "05:18",
+        indul: "05:18"
+      },
+      {
+        megallo: "Tatabánya",
+        erkezik: "05:23",
+        indul: "05:24"
+      },
+      {
+        megallo: "Vértesszőlős",
+        erkezik: "05:27",
+        indul: "05:27"
+      },
+      {
+        megallo: "Tóvároskert",
+        erkezik: "05:30",
+        indul: "05:30"
+      },
+      {
+        megallo: "Tata",
+        erkezik: "05:32",
+        indul: "05:33"
+      },
+      {
+        megallo: "Almásfüzitő",
+        erkezik: "05:40",
+        indul: "05:44"
+      },
+      {
+        megallo: "Almásfüzitő felső",
+        erkezik: "05:48",
+        indul: "05:49"
+      },
+      {
+        megallo: "Szőny",
+        erkezik: "05:52",
+        indul: "05:52"
+      },
+      {
+        megallo: "Komárom",
+        erkezik: "05:56",
+        indul: "05:57"
+      },
+      {
+        megallo: "Ács",
+        erkezik: "06:02",
+        indul: "06:03"
+      },
+      {
+        megallo: "Nagyszentjános",
+        erkezik: "06:08",
+        indul: "06:09"
+      },
+      {
+        megallo: "Győrszentiván",
+        erkezik: "06:14",
+        indul: "06:15"
+      },
+      {
+        megallo: "Győr-Gyárváros",
+        erkezik: "06:19",
+        indul: "06:19"
+      },
+      {
+        megallo: "Győr",
+        erkezik: "06:23",
+        indul: null
+      }
+    ],
+    "912 Claudius IC": [
+      {
+        megallo: "Budapest-Keleti",
+        erkezik: null,
+        indul: "08:10"
+      },
+      {
+        megallo: "Budapest-Kelenföld",
+        erkezik: "08:23",
+        indul: "08:25"
+      },
+      {
+        megallo: "Tatabánya",
+        erkezik: "08:55",
+        indul: "08:56"
+      },
+      {
+        megallo: "Tata",
+        erkezik: "09:03",
+        indul: "09:04"
+      },
+      {
+        megallo: "Komárom",
+        erkezik: "09:16",
+        indul: "09:17"
+      },
+      {
+        megallo: "Győr",
+        erkezik: "09:35",
+        indul: "09:38"
+      },
+      {
+        megallo: "Csorna",
+        erkezik: "09:58",
+        indul: "09:59"
+      },
+      {
+        megallo: "Répcelak",
+        erkezik: "10:18",
+        indul: "10:19"
+      },
+      {
+        megallo: "Szombathely",
+        erkezik: "10:49",
+        indul: null
+      }
+    ],
+    "9306 személyvonat": [
+      {
+        megallo: "Budapest-Keleti",
+        erkezik: null,
+        indul: "16:53"
+      },
+      {
+        megallo: "Ferencváros",
+        erkezik: "17:01",
+        indul: "17:02"
+      },
+      {
+        megallo: "Budapest-Kelenföld",
+        erkezik: "17:09",
+        indul: "17:10"
+      },
+      {
+        megallo: "Biatorbágy",
+        erkezik: "17:19",
+        indul: "17:20"
+      },
+      {
+        megallo: "Bicske alsó",
+        erkezik: "17:29",
+        indul: "17:29"
+      },
+      {
+        megallo: "Bicske",
+        erkezik: "17:31",
+        indul: "17:32"
+      },
+      {
+        megallo: "Alsógalla",
+        erkezik: "17:44",
+        indul: "17:44"
+      },
+      {
+        megallo: "Tatabánya",
+        erkezik: "17:47",
+        indul: "17:48"
+      },
+      {
+        megallo: "Tóvároskert",
+        erkezik: "17:54",
+        indul: "17:54"
+      },
+      {
+        megallo: "Tata",
+        erkezik: "17:56",
+        indul: "17:57"
+      },
+      {
+        megallo: "Komárom",
+        erkezik: "18:09",
+        indul: "18:10"
+      },
+      {
+        megallo: "Ács",
+        erkezik: "18:15",
+        indul: "18:16"
+      },
+      {
+        megallo: "Győr-Gyárváros",
+        erkezik: "18:28",
+        indul: "18:28"
+      },
+      {
+        megallo: "Győr",
+        erkezik: "18:31",
+        indul: null
+      }
+    ],
+    "9696 InterRégió": [
+      {
+        megallo: "Balatonszentgyörgy",
+        erkezik: null,
+        indul: "16:00"
+      },
+      {
+        megallo: "Keszthely",
+        erkezik: "16:11",
+        indul: "16:12"
+      },
+      {
+        megallo: "Gyenesdiás",
+        erkezik: "16:16",
+        indul: "16:16"
+      },
+      {
+        megallo: "Vonyarcvashegy",
+        erkezik: "16:19",
+        indul: "16:20"
+      },
+      {
+        megallo: "Balatongyörök",
+        erkezik: "16:23",
+        indul: "16:24"
+      },
+      {
+        megallo: "Balatonederics",
+        erkezik: "16:29",
+        indul: "16:30"
+      },
+      {
+        megallo: "Tapolca",
+        erkezik: "16:40",
+        indul: "16:41"
+      },
+      {
+        megallo: "Sümeg",
+        erkezik: "16:58",
+        indul: "17:01"
+      },
+      {
+        megallo: "Jánosháza",
+        erkezik: "17:15",
+        indul: "17:15"
+      },
+      {
+        megallo: "Celldömölk",
+        erkezik: "17:29",
+        indul: "17:37"
+      },
+      {
+        megallo: "Pápa",
+        erkezik: "18:00",
+        indul: "18:02"
+      },
+      {
+        megallo: "Vaszar",
+        erkezik: "18:09",
+        indul: "18:09"
+      },
+      {
+        megallo: "Szerecseny",
+        erkezik: "18:17",
+        indul: "18:17"
+      },
+      {
+        megallo: "Gyömöre-Tét",
+        erkezik: "18:22",
+        indul: "18:23"
+      },
+      {
+        megallo: "Győrszabadhegy",
+        erkezik: "18:38",
+        indul: "18:39"
+      },
+      {
+        megallo: "Győr-Gyárváros",
+        erkezik: "18:42",
+        indul: "18:42"
+      },
+      {
+        megallo: "Győr",
+        erkezik: "18:47",
+        indul: null
+      }
+    ],
+    "4945 személyvonat": [
+      {
+        megallo: "Győr",
+        erkezik: null,
+        indul: "12:40"
+      },
+      {
+        megallo: "Győr-Gyárváros",
+        erkezik: "12:42",
+        indul: "12:42"
+      },
+      {
+        megallo: "Győrszentiván",
+        erkezik: "12:46",
+        indul: "12:47"
+      },
+      {
+        megallo: "Nagyszentjános",
+        erkezik: "12:52",
+        indul: "12:53"
+      },
+      {
+        megallo: "Ács",
+        erkezik: "12:58",
+        indul: "12:59"
+      },
+      {
+        megallo: "Komárom",
+        erkezik: "13:04",
+        indul: "13:05"
+      },
+      {
+        megallo: "Szőny",
+        erkezik: "13:09",
+        indul: "13:09"
+      },
+      {
+        megallo: "Almásfüzitő felső",
+        erkezik: "13:11",
+        indul: "13:12"
+      },
+      {
+        megallo: "Almásfüzitő",
+        erkezik: "13:16",
+        indul: "13:23"
+      },
+      {
+        megallo: "Tata",
+        erkezik: "13:29",
+        indul: "13:30"
+      },
+      {
+        megallo: "Tóvároskert",
+        erkezik: "13:33",
+        indul: "13:33"
+      },
+      {
+        megallo: "Vértesszőlős",
+        erkezik: "13:36",
+        indul: "13:36"
+      },
+      {
+        megallo: "Tatabánya",
+        erkezik: "13:39",
+        indul: "13:40"
+      },
+      {
+        megallo: "Alsógalla",
+        erkezik: "13:43",
+        indul: "13:43"
+      },
+      {
+        megallo: "Szárliget",
+        erkezik: "13:48",
+        indul: "13:49"
+      },
+      {
+        megallo: "Szár",
+        erkezik: "13:52",
+        indul: "13:52"
+      },
+      {
+        megallo: "Bicske",
+        erkezik: "13:57",
+        indul: "13:58"
+      },
+      {
+        megallo: "Bicske alsó",
+        erkezik: "14:00",
+        indul: "14:00"
+      },
+      {
+        megallo: "Herceghalom",
+        erkezik: "14:04",
+        indul: "14:05"
+      },
+      {
+        megallo: "Biatorbágy",
+        erkezik: "14:09",
+        indul: "14:10"
+      },
+      {
+        megallo: "Törökbálint",
+        erkezik: "14:15",
+        indul: "14:15"
+      },
+      {
+        megallo: "Budaörs",
+        erkezik: "14:19",
+        indul: "14:20"
+      },
+      {
+        megallo: "Budapest-Kelenföld",
+        erkezik: "14:27",
+        indul: "14:32"
+      },
+      {
+        megallo: "Budapest-Déli",
+        erkezik: "14:39",
+        indul: null
+      },
+    ]
+  };
+</script>
+</html>

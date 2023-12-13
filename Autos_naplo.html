@@ -1,3 +1,34 @@
+<!-- 
+Készítsen olyan HTML5 weboldalt az alábbi ábrának megfelelően,
+melynek nyelve magyar, karakterkódolása UTF-8, böngészőfülön megjelenő címe pedig Autós napló!
+
+Készítsen ezen egy űrlapot, amiben elhelyez három címkét „Bejegyzések”, „km-számláló állása” és „Dátum” tartalommal a megfelelő beviteli mezőkhöz!
+
+Hozza létre a bejegyzéseket tartalmazó, többszörös kiválasztást lehetővé tevő listát, melyben egymás alatt 6 sornyi adat fér el görgetés nélkül!
+
+Készítsen szövegbeviteli mezőt is, melyben a „Megnevezés” szöveg jelenik meg mindaddig amíg a felhasználó el nem kezd gépelni bele valamit! Ennek kitöltése kötelező.
+Hozza létre a km-számláló állásának bevitelére alkalmas számbeviteli mezőt, melybe nem lehet negatív értéket bevinni, és csak egészeket fogad el! Kiindulási értéke legyen 0, és kitöltése legyen kötelező!
+Hozza létre a dátumbeviteli mezőt is, melyet szintén kötelező kitölteni!
+
+Végül helyezzen el az űrlapon egy „Hozzáad” feliratú, kifejezetten űrlapok beküldésére szolgáló vezérlőt is!
+
+Gondoskodjon róla, hogy JavaScript támogatása hiányában a böngésző megjelenítse a „Az Ön böngészője nem alkalmas az alkalmazás futtatására.” hibaüzenetet.
+
+A weboldalt egészítse ki CSS stíluslappal!
+A címkék szövegét jelenítse meg a mellékelt, RubikGemstones-Regular.ttf karakterkészlettel
+Az űrlapmezőket és címkéiket jelenítse meg flex tárolóban, egymás alatt, 
+a tároló maximális szélessége 12 cm legyen és ha a böngésző ablakának szélessége ennél nagyobb, 
+akkor a tárolót igazítsa a képernyő közepére.
+A tárolóban elhelyezett elemeket 10 képpont távolságra helyezze el egymástól.
+
+Készítsen JavaScript programot, ami lekérdezi a böngészőtől az aktuális dátumot, és erre állítja be a dátumválasztó mezőt!
+
+Ha a felhasználó a „Hozzáad” gombra kattint, fűzzön hozzá a bejegyzésekhez egy új elemet, melyben egymástól kötöjellel elválasztva szerepelnek a bevitt adatok!
+
+Gondoskodjon róla, hogy újabb bejegyzések létrehozásánál ne lehessen az utoljára bevittnél kisebb km-óra állást és korábbi dátumot megadni!
+
+-->
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -44,6 +75,7 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #00b327;
 }
+
     </style>
 </head>
 <body>
@@ -51,15 +83,11 @@ input[type="submit"]:hover {
     <form id="autonaplo-form" action="#" method="post">
         <label for="bejegyzesek">Bejegyzések:</label>
         <select id="bejegyzesek" name="bejegyzesek" size="6">
-          
-        </select>
+        </select> 
         <br>
-        
-        
         <label for="km-allas">Km-számláló állása:</label>
         <input type="number" id="km-allas" name="km-allas" min="0" step="1" required>
         <br>
-
         <label for="datum">Dátum:</label>
         <input type="date" id="datum" name="datum" required>
         <button type="button" id="set-current-date">Aktuális dátum beállítása</button>
