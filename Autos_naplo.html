@@ -89,7 +89,7 @@ input[type="submit"]:hover {
      Készítsen ezen egy űrlapot(form), amiben elhelyez három címkét(label) „Bejegyzések”, „km-számláló állása” és „Dátum” tartalommal a megfelelő beviteli mezőkhöz (input)!
     -->
     <form id="autonaplo-form" action="#" method="post"> 
-        <label for="bejegyzesek">Bejegyzések:</label>
+        <label> <strong for="bejegyzesek">Bejegyzések:</label>
         <select id="bejegyzesek" name="bejegyzesek" size="6"> 
 <!--Hozza létre a bejegyzéseket tartalmazó, többszörös kiválasztást lehetővé tevő listát, melyben egymás alatt 6 sornyi adat fér el görgetés nélkül!-->
         </select> 
@@ -101,9 +101,10 @@ input[type="submit"]:hover {
         <label for="datum">Dátum:</label>
         <input type="date" id="datum" name="datum" required>
         <!--Hozza létre a dátumbeviteli mezőt is, melyet szintén kötelező kitölteni!-->
+
         <button type="button" id="set-current-date">Aktuális dátum beállítása</button>
         <br>
-        <label for="megnevezes">Megnevezés:</label>
+        <label hidden for="megnevezes">Megnevezés:</label>
         <!-- Készítsen szövegbeviteli mezőt is, melyben a „Megnevezés” szöveg jelenik meg mindaddig amíg a felhasználó el nem kezd gépelni bele valamit!  
         Ennek kitöltése kötelező.-->
         <input type="text" id="megnevezes" name="megnevezes" placeholder="Megnevezés" required> 
@@ -122,8 +123,8 @@ input[type="submit"]:hover {
         document.getElementById("set-current-date").addEventListener("click", function () {
             var today = new Date();
             var year = today.getFullYear();
-            var month = (today.getMonth() + 1).toString().padStart(2, "0");
-            var day = today.getDate().toString().padStart(2, "0");
+            var month = (today.getMonth() + 1);//.toString().padStart(2, "0");
+            var day = today.getDate();//.toString()//.padStart(2, "0");
             var formattedDate = year + "-" + month + "-" + day;
             document.getElementById("datum").value = formattedDate;
         });
